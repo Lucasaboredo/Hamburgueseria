@@ -210,6 +210,29 @@ export default function Home() {
   const cartTotalItems = cartItems.reduce((acc, i) => acc + i.quantity, 0);
   const cartTotalPrice = cartItems.reduce((acc, i) => acc + (i.price * i.quantity), 0);
 
+  const handleCheckout = () => {
+    const phoneNumber = "543447610312";
+    let message = "🍔 *NUEVO PEDIDO - BURGER TOWN* 🍔\n\n";
+    
+    message += `*Método:* ${deliveryMethod === 'delivery' ? 'Envío a Domicilio' : 'Retiro lo antes posible'}\n\n`;
+    message += `*Detalle del pedido:*\n`;
+    
+    cartItems.forEach(item => {
+      message += `- ${item.quantity}x ${item.name} ($${item.price * item.quantity})\n`;
+    });
+    
+    message += `\n*TOTAL A PAGAR: $${cartTotalPrice}*`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    
+    window.open(whatsappUrl, '_blank');
+    
+    // Reset cart
+    setCartItems([]);
+    setIsCartOpen(false);
+  };
+
   return (
     <div className={styles.layout}>
       {/* Hero Section */}
@@ -347,8 +370,8 @@ export default function Home() {
                   <span>Total a Pagar</span>
                   <span className={styles.cartTotalAmount}>${cartTotalPrice}</span>
                 </div>
-                <button className={styles.checkoutBtn}>
-                  Continuar
+                <button className={styles.checkoutBtn} onClick={handleCheckout}>
+                  Enviar Pedido por WhatsApp
                 </button>
               </div>
             )}
